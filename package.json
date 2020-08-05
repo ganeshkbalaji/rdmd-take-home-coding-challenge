@@ -1,0 +1,15 @@
+{
+  "name": "records-app",
+  "private": true,
+  "scripts": {
+    "install": "concurrently \"cd client && npm install\" \"cd server && npm install\"",
+    "start": "concurrently \"cd client && npm start\" \"cd server && npm start\"",
+    "test": "concurrently \"cd client && npm test\" \"cd server && npm test\"",
+    "lint": "concurrently \"cd client && npm run lint\" \"cd server && npm run lint\"",
+    "format": "concurrently \"cd client && npm run format\" \"cd server && npm run format\""
+  },
+  "devDependencies": {
+    "@types/jest": "^25.2.3",
+    "concurrently": "^5.2.0"
+  }
+}

@@ -1,0 +1,9 @@
+import './custom.scss'
+
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './index.css'
+import App from './App'
+
+// app hydration
+ReactDOM.render(<App />, document.getElementById('root'))
