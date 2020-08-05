@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 
 import PatientList from './PatientList'
 import Home from './Home'
+import Results from './Results'
 
 // navigates the user through different pages in the application
 function Layout({ title, children }) {
@@ -40,6 +41,11 @@ export default function Router() {
                 Patients
               </Link>
             </li>
+            <li className='nav-item'>
+              <Link className='nav-link' to='/results'>
+                Results
+              </Link>
+            </li>
           </ul>
         </nav>
         <Switch>
@@ -48,6 +54,12 @@ export default function Router() {
               <PatientList />
             </Layout>
           </Route>
+          <Route path='/results'>
+            <Layout title='Results'>
+              <Results />
+            </Layout>
+          </Route>
+          
           <Route path='/'>
             <Layout title='Patient Manager'>
               <Home />

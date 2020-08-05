@@ -2,6 +2,79 @@ import React, { Component, Fragment } from 'react'
 
 import Api from './Api'
 
+
+class PatientItem extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      editing: false
+    }
+  }
+  updateFormItem (e) {
+    this.setState({
+      ["form_item_" + e.target.name]: e.target.value 
+    })
+  }
+  enableEdit () {
+    this.setState({
+      editing: true
+    })
+  }
+  update () {
+    this.props.patient.aliasName = this.state.form_item_alias_name
+    this.setState({
+      editing: false
+    })
+    this.props.onUpdateRequest()
+  }
+  render () {
+    const { patient } = this.props
+
+    let aliasNameEl = patient.aliasName
+    let editOrSaveBtn = <button
+          className='btn btn-danger'
+          onClick={() => this.enableEdit()}
+        >
+          Edit
+        </button>
+    if (this.state.editing) {
+      aliasNameEl = <input
+        type='text'
+        defaultValue={aliasNameEl}
+        name="alias_name"
+        onChange={e => this.updateFormItem(e)}
+      />
+      editOrSaveBtn = <button
+        className='btn btn-danger'
+        onClick={() => this.update()}
+      >
+        Save
+      </button>
+    }
+
+    return <div className='row align-items-center'>
+      <div className='col'>
+        <div className='row'>Name: {patient.name}</div>
+        <div className='row'>
+          AliasName: {aliasNameEl}
+        </div>
+        <div className='row'>Birthday: {patient.birthday}</div>
+        <div className='row'>Diagnosis: {patient.diagnosis}</div>
+        <div className='row'>Email: {patient.email}</div>
+      </div>
+      <div className='col-auto'>
+        {editOrSaveBtn}
+        <button
+          className='btn btn-danger'
+          onClick={() => this.props.onDeleteRequest(patient)}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  }
+}
+
 // Displays a list of patients in the patient manager app
 export default class PatientList extends Component {
   state = {
@@ -41,9 +114,8 @@ export default class PatientList extends Component {
 
   async handleEdit(patient) {
     this.withError(async () => {
-      await Api.patientDelete(patient.id)
-      const patients = this.state.patients.filter(p => p.id !== patient.id)
-      this.setState({ patients })
+      await Api.patientPatch(patient.id, patient.aliasName)
+      this.setState({ patients: this.state.patients })
     })
   }
 
@@ -58,8 +130,10 @@ export default class PatientList extends Component {
   // adds a new patient to the list
   async handleAdd(e) {
     const { name, aliasName, birthday, diagnosis, email } = this.state
+    
     this.withError(async () => {
       if (!name) throw new TypeError('Please provide a name')
+      if (!diagnosis) throw new TypeError('Please provide a ndiangissame')
       const patient = await Api.patientAdd({ name, aliasName, birthday, diagnosis, email, aliasName })
       const patients = this.state.patients.concat(patient)
       this.setState({ patients, name: undefined, aliasName: undefined, birthday: undefined, diagnosis: undefined, email: undefined })
@@ -106,6 +180,7 @@ export default class PatientList extends Component {
                     value={diagnosis}
                     onChange={e => this.updateState('diagnosis', e)}
                   >
+                    <option value="">Select a diagnosis</option>
                     <option value="cdkl5">CDKL5</option>
                     <option value="hunter">Hunter syndrome</option>
                     <option value="nf2">NF2</option>
@@ -133,29 +208,11 @@ export default class PatientList extends Component {
             </li>
             {patients.map(patient => (
               <li key={patient.id} className='list-group-item'>
-                <div className='row align-items-center'>
-                  <div className='col'>
-                    <div className='row'>Name: {patient.name}</div>
-                    <div className='row'>AliasName: {patient.aliasName}</div>
-                    <div className='row'>Birthday: {patient.birthday}</div>
-                    <div className='row'>Diagnosis: {patient.diagnosis}</div>
-                    <div className='row'>Email: {patient.email}</div>
-                  </div>
-                  <div className='col-auto'>
-                    <button
-                      className='btn btn-danger'
-                      onClick={() => this.handleEdit(patient)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className='btn btn-danger'
-                      onClick={() => this.handleDelete(patient)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
+                <PatientItem
+                  patient={patient}
+                  onDeleteRequest={() => this.handleDelete(patient)}
+                  onUpdateRequest={() => this.handleEdit(patient) }
+                />
               </li>
             ))}
           </ul>

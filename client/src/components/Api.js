@@ -30,12 +30,15 @@ export default class Api {
   }
 
   static async patientDelete(id) {
+    // DELETE patient/:id
     const { patient } = await this.request('delete', ['patient', id])
     return patient
   }
 
-  static async patientDelete(id) {
-    const { patient } = await this.request('put', ['patient', id])
+  static async patientPatch(id, aliasName) {
+    // PATCH patient/:id
+    //  - query: aliasName
+    const { patient } = await this.request('patch', ['patient', id], { aliasName })
     return patient
   }
 }

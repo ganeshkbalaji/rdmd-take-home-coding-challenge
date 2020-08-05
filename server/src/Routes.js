@@ -31,9 +31,17 @@ export default class Routes {
       res.json({ patient })
     })
 
+    /*
     app.put('/patient/:id', (req, res) => {
-      const { id, name } = req.params
+      const { id, name} = req.params
       const patient = database.patientUpdate(parseInt(id, 10), name)
+      res.json({ patient })
+    })*/
+
+    app.patch('/patient/:id', (req, res) => {
+      const { id } = req.params
+      const { aliasName } = req.query
+      const patient = database.patientPatch(parseInt(id, 10), aliasName)
       res.json({ patient })
     })
 

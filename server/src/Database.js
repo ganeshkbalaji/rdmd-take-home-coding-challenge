@@ -37,7 +37,7 @@ export default class Database {
     const { patients, counters } = this.data
     counters.patient = (counters.patient || 0) + 1
     const id = counters.patient
-    const patient = { id, name, aliasName, birthday, diagnosis }
+    const patient = { id, name, aliasName, birthday, diagnosis, email }
     patients.push(patient)
     this.flush()
     return patient
@@ -58,6 +58,15 @@ export default class Database {
     if (index < 0) throw new Error('Patient id not found')
     const patient = patients[index]
     patients.splice(index, 1)
+    this.flush()
+    return patient
+  }
+
+  patientPatch(id, aliasName) {
+    const { patients } = this.data
+    const patient = patients.find(patient => patient.id === id)
+    if (!patient) throw new Error('Patient id not found')
+    patient.aliasName = aliasName
     this.flush()
     return patient
   }

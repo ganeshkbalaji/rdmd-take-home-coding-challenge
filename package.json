@@ -11,5 +11,8 @@
   "devDependencies": {
     "@types/jest": "^25.2.3",
     "concurrently": "^5.2.0"
+  },
+  "dependencies": {
+    "recharts": "^1.8.5"
   }
 }
