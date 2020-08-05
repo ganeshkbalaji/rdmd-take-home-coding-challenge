@@ -52,16 +52,17 @@ describe('Database', () => {
   describe('patient add', () => {
     test('with all params', () => {
       const name = 'Maya'
+      const aliasName = 'testMaya'
       const birthday = '2020-05-20'
       const diagnosis = 'nf2'
       const email = 'maya@rdmd.com'
-      const state = { name, birthday, diagnosis, email}
+      const state = { name, aliasName, birthday, diagnosis, email}
       const store = new FileStore()
 
       const database = new Database(store)
       expect(database.patientCount()).toEqual(0)
 
-      database.patientAdd(name, birthday, diagnosis, email)
+      database.patientAdd(name, aliasName, birthday, diagnosis, email)
       expect(database.patientCount()).toEqual(1)
       expect(database.patientFind(1)).toEqual(state)
     })

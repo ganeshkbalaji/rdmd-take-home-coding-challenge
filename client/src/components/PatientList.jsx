@@ -8,6 +8,7 @@ export default class PatientList extends Component {
     patients: undefined,
     error: undefined,
     name: undefined,
+    aliasName: undefined,
     birthday: undefined,
     diagnosis: undefined,
     email: undefined,
@@ -18,6 +19,7 @@ export default class PatientList extends Component {
 
     this.handleAdd = this.handleAdd.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
+    this.handleEdit = this.handleEdit.bind(this)
     this.updateState = this.updateState.bind(this)
   }
 
@@ -37,6 +39,14 @@ export default class PatientList extends Component {
     })
   }
 
+  async handleEdit(patient) {
+    this.withError(async () => {
+      await Api.patientDelete(patient.id)
+      const patients = this.state.patients.filter(p => p.id !== patient.id)
+      this.setState({ patients })
+    })
+  }
+
   async handleDelete(patient) {
     this.withError(async () => {
       await Api.patientDelete(patient.id)
@@ -47,12 +57,12 @@ export default class PatientList extends Component {
 
   // adds a new patient to the list
   async handleAdd(e) {
-    const { name, birthday, diagnosis, email } = this.state
+    const { name, aliasName, birthday, diagnosis, email } = this.state
     this.withError(async () => {
       if (!name) throw new TypeError('Please provide a name')
-      const patient = await Api.patientAdd({ name, birthday, diagnosis, email })
+      const patient = await Api.patientAdd({ name, aliasName, birthday, diagnosis, email, aliasName })
       const patients = this.state.patients.concat(patient)
-      this.setState({ patients, name: undefined, birthday: undefined, diagnosis: undefined, email: undefined })
+      this.setState({ patients, name: undefined, aliasName: undefined, birthday: undefined, diagnosis: undefined, email: undefined })
     })
     e.preventDefault()
   }
@@ -62,7 +72,7 @@ export default class PatientList extends Component {
   }
 
   render() {
-    const { patients, error, name, birthday, diagnosis, email } = this.state
+    const { patients, error, name, aliasName, birthday, diagnosis, email } = this.state
     return (
       <Fragment>
         {error && <div className='alert alert-danger'>{error.message}</div>}
@@ -80,9 +90,9 @@ export default class PatientList extends Component {
                   />
                   <input
                     className='form-control'
-                    onChange={e => this.updateState('name', e)}
-                    placeholder='Patient Name'
-                    value={name || ''}
+                    onChange={e => this.updateState('aliasName', e)}
+                    placeholder='Patient Alias Name'
+                    value={aliasName || ''}
                   />
                   <input
                     className='form-control'
@@ -126,11 +136,18 @@ export default class PatientList extends Component {
                 <div className='row align-items-center'>
                   <div className='col'>
                     <div className='row'>Name: {patient.name}</div>
+                    <div className='row'>AliasName: {patient.aliasName}</div>
                     <div className='row'>Birthday: {patient.birthday}</div>
                     <div className='row'>Diagnosis: {patient.diagnosis}</div>
                     <div className='row'>Email: {patient.email}</div>
                   </div>
                   <div className='col-auto'>
+                    <button
+                      className='btn btn-danger'
+                      onClick={() => this.handleEdit(patient)}
+                    >
+                      Edit
+                    </button>
                     <button
                       className='btn btn-danger'
                       onClick={() => this.handleDelete(patient)}

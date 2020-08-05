@@ -26,8 +26,8 @@ export default class Routes {
     })
 
     app.post('/patients', (req, res) => {
-      const { name, birthday, diagnosis, email } = req.query
-      const patient = database.patientAdd(name, birthday, diagnosis, email)
+      const { name, aliasName, birthday, diagnosis, email } = req.query
+      const patient = database.patientAdd(name, aliasName, birthday, diagnosis, email)
       res.json({ patient })
     })
 

@@ -33,11 +33,11 @@ export default class Database {
     return patients.find(patient => patient.id === id)
   }
 
-  patientAdd(name, birthday, diagnosis, email) {
+  patientAdd(name, aliasName, birthday, diagnosis, email) {
     const { patients, counters } = this.data
     counters.patient = (counters.patient || 0) + 1
     const id = counters.patient
-    const patient = { id, name, birthday, diagnosis }
+    const patient = { id, name, aliasName, birthday, diagnosis }
     patients.push(patient)
     this.flush()
     return patient

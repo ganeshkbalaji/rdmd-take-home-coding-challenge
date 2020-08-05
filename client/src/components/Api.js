@@ -24,13 +24,18 @@ export default class Api {
     return patients
   }
 
-  static async patientAdd({ name, birthday, diagnosis, email }) {
-    const { patient } = await this.request('post', ['patients'], { name, birthday, diagnosis, email })
+  static async patientAdd({ name, aliasName, birthday, diagnosis, email }) {
+    const { patient } = await this.request('post', ['patients'], { name, aliasName, birthday, diagnosis, email })
     return patient
   }
 
   static async patientDelete(id) {
     const { patient } = await this.request('delete', ['patient', id])
+    return patient
+  }
+
+  static async patientDelete(id) {
+    const { patient } = await this.request('put', ['patient', id])
     return patient
   }
 }
