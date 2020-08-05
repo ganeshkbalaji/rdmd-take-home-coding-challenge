@@ -2,3 +2,19 @@
 
 // Import Bootstrap and its default variables
 @import '~bootstrap/scss/bootstrap.scss';
+
+
+.col-auto {
+    display: flex;
+    flex-flow: row wrap;
+    input {
+        margin-bottom: 20px;
+    }
+    select {
+        margin-bottom: 20px;
+    }
+}
+
+.btn-danger {
+    margin-right: 10px;
+}
