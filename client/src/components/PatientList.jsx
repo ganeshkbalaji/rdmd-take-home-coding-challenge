@@ -3,78 +3,7 @@ import React, { Component, Fragment } from 'react'
 import Api from './Api'
 import PatientItem  from './PatientItem'
 
-
-// class PatientItem extends Component {
-//   constructor (props) {
-//     super(props)
-//     this.state = {
-//       editing: false
-//     }
-//   }
-//   updateFormItem (e) {
-//     this.setState({
-//       ["form_item_" + e.target.name]: e.target.value 
-//     })
-//   }
-//   enableEdit () {
-//     this.setState({
-//       editing: true
-//     })
-//   }
-//   update () {
-//     this.props.patient.aliasName = this.state.form_item_alias_name
-//     this.setState({
-//       editing: false
-//     })
-//     this.props.onUpdateRequest()
-//   }
-//   render () {
-//     const { patient } = this.props
-
-//     let aliasNameEl = patient.aliasName
-//     let editOrSaveBtn = <button
-//           className='btn btn-danger'
-//           onClick={() => this.enableEdit()}
-//         >
-//           Edit
-//         </button>
-//     if (this.state.editing) {
-//       aliasNameEl = <input
-//         type='text'
-//         defaultValue={aliasNameEl}
-//         name="alias_name"
-//         onChange={e => this.updateFormItem(e)}
-//       />
-//       editOrSaveBtn = <button
-//         className='btn btn-danger'
-//         onClick={() => this.update()}
-//       >
-//         Save
-//       </button>
-//     }
-
-//     return <div className='row align-items-center'>
-//       <div className='col'>
-//         <div className='row'>Name: {patient.name}</div>
-//         <div className='row'>
-//           AliasName: {aliasNameEl}
-//         </div>
-//         <div className='row'>Birthday: {patient.birthday}</div>
-//         <div className='row'>Diagnosis: {patient.diagnosis}</div>
-//         <div className='row'>Email: {patient.email}</div>
-//       </div>
-//       <div className='col-auto'>
-//         {editOrSaveBtn}
-//         <button
-//           className='btn btn-danger'
-//           onClick={() => this.props.onDeleteRequest(patient)}
-//         >
-//           Delete
-//         </button>
-//       </div>
-//     </div>
-//   }
-// }
+import { withError } from "../util/commonUtil"
 
 // Displays a list of patients in the patient manager app
 export default class PatientList extends Component {
@@ -97,31 +26,22 @@ export default class PatientList extends Component {
     this.updateState = this.updateState.bind(this)
   }
 
-  async withError(operation) {
-    try {
-      return await operation()
-    } catch (error) {
-      if (!(error instanceof TypeError)) throw error
-      this.setState({ error })
-    }
-  }
-
   async componentDidMount() {
-    this.withError(async () => {
+    withError(async () => {
       const patients = await Api.patientList()
       this.setState({ patients })
     })
   }
 
   async handleEdit(patient) {
-    this.withError(async () => {
+    withError(async () => {
       await Api.patientPatch(patient.id, patient.aliasName)
       this.setState({ patients: this.state.patients })
     })
   }
 
   async handleDelete(patient) {
-    this.withError(async () => {
+    withError(async () => {
       await Api.patientDelete(patient.id)
       const patients = this.state.patients.filter(p => p.id !== patient.id)
       this.setState({ patients })
@@ -132,7 +52,7 @@ export default class PatientList extends Component {
   async handleAdd(e) {
     const { name, aliasName, birthday, diagnosis, email } = this.state
     
-    this.withError(async () => {
+    withError(async () => {
       if (!name) throw new TypeError('Please provide a name')
       if (!diagnosis) throw new TypeError('Please provide a ndiangissame')
       const patient = await Api.patientAdd({ name, aliasName, birthday, diagnosis, email, aliasName })
@@ -202,9 +122,6 @@ export default class PatientList extends Component {
                     Add
                   </button>
                 </div>
-                {/* <div className='col-auto'>
-                 
-                </div> */}
               </form>
             </li>
             {patients.map(patient => (

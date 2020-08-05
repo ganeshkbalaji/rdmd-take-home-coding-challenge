@@ -3,6 +3,8 @@ import React, { Component, Fragment } from 'react'
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   } from 'recharts';
+
+import { withError } from "../util/commonUtil"
   
 
 import Api from './Api'
@@ -17,21 +19,13 @@ export default class Results extends Component {
         }
       }
 
-      async withError(operation) {
-        try {
-          return await operation()
-        } catch (error) {
-          if (!(error instanceof TypeError)) throw error
-          this.setState({ error })
-        }
-      }
-
     async componentDidMount() {
-        this.withError(async () => {
+        withError(async () => {
             const patients = await Api.patientList()
             this.setState({ patients })
         })
     }
+    
     render() {
         /*
         const diagnosisMap = this.state.patients.reduce((acc, cPatient) => {
@@ -100,9 +94,9 @@ export default class Results extends Component {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="minors" fill="#8884d8" />
-                    <Bar dataKey="adults" fill="#000000" />
-                    <Bar dataKey="retired" fill="#CCCCCC" />
+                    <Bar dataKey="minors" fill="#ff007f" />
+                    <Bar dataKey="adults" fill="#00c895" />
+                    <Bar dataKey="retired" fill="#007bff" />
                 </BarChart>
             </Fragment>
         )
